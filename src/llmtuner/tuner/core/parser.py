@@ -64,7 +64,7 @@ def get_train_args(
     FinetuningArguments,
     GeneratingArguments
 ]:
-    model_args, data_args, training_args, finetuning_args, generating_args = parse_train_args(args)
+    model_args, data_args, training_args, finetuning_args, generating_args, memory_profiling_args = parse_train_args(args)
 
     # Setup logging
     if training_args.should_log:
@@ -184,7 +184,7 @@ def get_train_args(
     # Set seed before initializing model.
     transformers.set_seed(training_args.seed)
 
-    return model_args, data_args, training_args, finetuning_args, generating_args
+    return model_args, data_args, training_args, finetuning_args, generating_args, memory_profiling_args
 
 
 def get_infer_args(

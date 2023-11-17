@@ -173,6 +173,7 @@ def load_model_and_tokenizer(
         config=config,
         torch_dtype=model_args.compute_dtype,
         low_cpu_mem_usage=(not is_deepspeed_zero3_enabled()),
+        use_flash_attention_2=True,
         **config_kwargs
     )
 

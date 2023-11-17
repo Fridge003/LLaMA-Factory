@@ -104,7 +104,7 @@ def parse_args(parser: "HfArgumentParser", args: Optional[Dict[str, Any]] = None
     elif len(sys.argv) == 2 and sys.argv[1].endswith(".json"):
         return parser.parse_json_file(os.path.abspath(sys.argv[1]))
     else:
-        return parser.parse_args_into_dataclasses()
+        return parser.parse_args_into_dataclasses(return_remaining_strings=True)
 
 
 def dispatch_model(model: "PreTrainedModel") -> "PreTrainedModel":
