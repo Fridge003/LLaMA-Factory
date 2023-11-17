@@ -2,10 +2,10 @@ MODEL_DIR="./model"
 DATA_DIR="alpaca_en"
 
 ZERO_STAGE=2
-NUM_GPUS=8
-BS_PER_GPU=44
-GRAD_ACCUM=$((512/$BS_PER_GPU))
-# GRAD_ACCUM=1
+NUM_GPUS=4
+BS_PER_GPU=16
+#GRAD_ACCUM=$((512/$BS_PER_GPU))
+GRAD_ACCUM=1
 LOG_STEP=1
 MAX_STEP=2
 
@@ -51,7 +51,7 @@ EOT
 
 deepspeed --num_gpus $NUM_GPUS --master_port=9901 src/train_bash.py \
     --deepspeed $DEEPSPEED_CONFIG \
-    --stage sft \
+    --stage pt \
     --model_name_or_path $MODEL_DIR \
     --do_train \
     --dataset $DATA_DIR \
@@ -68,6 +68,7 @@ deepspeed --num_gpus $NUM_GPUS --master_port=9901 src/train_bash.py \
     --learning_rate 5e-5 \
     --max_steps $MAX_STEP \
     --save_steps 1000 \
+    --flash_attn True \
     --plot_loss \
     --memory_profiling_step $LOG_STEP \
     --memory_profiling_log $MEMORY_LOG 2>&1 | tee $OUTPUT_LOG

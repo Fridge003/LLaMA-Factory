@@ -167,15 +167,17 @@ def load_model_and_tokenizer(
         config_kwargs["device_map"] = {"": int(os.environ.get("LOCAL_RANK", "0"))} if is_trainable else "auto"
         logger.info("Quantizing model to {} bit.".format(model_args.quantization_bit))
 
-    # Load and prepare pre-trained models (without valuehead).
-    model = AutoModelForCausalLM.from_pretrained(
-        model_to_load,
-        config=config,
-        torch_dtype=model_args.compute_dtype,
-        low_cpu_mem_usage=(not is_deepspeed_zero3_enabled()),
-        use_flash_attention_2=True,
-        **config_kwargs
-    )
+    # Load pre-trained models (without valuehead)
+    if stage == "pt":
+        model = AutoModelForCausalLM.from_config(config=config)
+    else:
+        model = AutoModelForCausalLM.from_pretrained(
+            model_to_load,
+            config=config,
+            torch_dtype=model_args.compute_dtype,
+            use_flash_attention_2=True,
+            **config_kwargs
+        )
 
     # Disable custom generate method (for Qwen and Baichuan2)
     if isinstance(model, PreTrainedModel) and "GenerationMixin" not in str(model.generate.__func__):
